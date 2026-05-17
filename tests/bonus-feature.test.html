@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bonus Feature Tests</title>
+    <style>
+      /* Minimal presentation for browser-run test output. */
+      body {
+        margin: 0;
+        font-family: "SF Mono", "Fira Code", Consolas, monospace;
+        background: #10141d;
+        color: #f5f7fa;
+      }
+
+      main {
+        max-width: 54rem;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+      }
+
+      h1 {
+        margin: 0 0 0.75rem;
+        font-size: 1.75rem;
+      }
+
+      p {
+        margin: 0 0 1.5rem;
+        color: #b5bfd1;
+      }
+
+      #summary {
+        display: inline-block;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: #1c2433;
+        font-weight: 700;
+      }
+
+      #results {
+        margin: 1.5rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      #results li {
+        margin-bottom: 0.75rem;
+        padding: 0.875rem 1rem;
+        border-radius: 0.75rem;
+        background: #1c2433;
+      }
+
+      #results li.passed {
+        border-left: 0.35rem solid #35c06a;
+      }
+
+      #results li.failed {
+        border-left: 0.35rem solid #f15b5b;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!-- Static shell for the JS test runner to populate with summary and case results. -->
+      <h1>Bonus Feature Tests</h1>
+      <p>
+        Deterministic logic and DOM integration tests for the purchased multiplier feature.
+      </p>
+      <div id="summary">Running tests...</div>
+      <ul id="results"></ul>
+    </main>
+
+    <!-- Load production modules first so the page-level test script can exercise real behavior. -->
+    <script src="../game-data.js"></script>
+    <script src="../bonus-feature.js"></script>
+    <script src="bonus-feature.test.js"></script>
+  </body>
+</html>

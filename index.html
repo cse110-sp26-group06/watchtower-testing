@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Drop Casino</title>
+    <script>
+      (function initializeTheme() {
+        try {
+          const storedTheme = window.localStorage.getItem("prompt-drop-theme-v1");
+          if (storedTheme === "light" || storedTheme === "dark") {
+            document.documentElement.dataset.theme = storedTheme;
+          }
+        } catch (error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="game-page">
+    <!-- Non-interactive visual layers used for ambient sparkles and transient celebration effects. -->
+    <div id="ambientSparkles" class="ambient-sparkles" aria-hidden="true"></div>
+    <div id="fxLayer" class="fx-layer" aria-hidden="true"></div>
+    <main class="app-shell">
+      <!-- Landing copy and global controls that frame the slot experience. -->
+      <section class="hero">
+        <a class="ghost-button button-link profile-link" href="profile.html">user profile</a>
+        <button
+          id="themeToggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Toggle color theme"
+          aria-pressed="false"
+        >
+          Dark Mode
+        </button>
+        <p class="eyebrow">Play-for-fun video slot</p>
+        <h1>Prompt Drop Casino</h1>
+        <p class="tagline">
+          Play a 5x3 video slot with fixed payouts, adjustable wager settings, and
+          auto-play controls.
+        </p>
+      </section>
+
+      <!-- Core game surface: meters, reels, controls, and supporting session insights. -->
+      <section class="machine" aria-label="slot machine">
+        <!-- Session and player meters updated continuously during play. -->
+        <div class="status-bar">
+          <article class="stat-card">
+            <span class="stat-label">Credit Meter</span>
+            <strong id="tokenCount">3,000</strong>
+          </article>
+          <article class="stat-card player-stat-card">
+            <span class="stat-label">Player</span>
+            <strong id="playerIdentityDisplay">
+              <span id="playerIconDisplay">🙂</span>
+              <span id="playerNameDisplay">Guest</span>
+            </strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Bet Per Spin</span>
+            <strong id="spinCostDisplay">40</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Auto-Play Count</span>
+            <strong id="queueCount">10</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Session Time</span>
+            <strong id="playTimeDisplay">00:00</strong>
+          </article>
+          <article id="lastAwardCard" class="stat-card">
+            <span class="stat-label">Last Win</span>
+            <strong id="lastAward">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Daily Streak</span>
+            <strong id="streakCount">0 days</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Token Refill</span>
+            <strong id="refillCountdownDisplay">Ready</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Eligibility Check</span>
+            <strong id="locationStatus">Pending</strong>
+          </article>
+        </div>
+
+        <!-- Reel presentation area, including bonus-state messaging and board-level visual effects. -->
+        <div class="reel-stage" id="reelStage">
+          <div class="machine-topline">
+            <span>10 fixed paylines: 3 horizontal, 5 vertical, 2 diagonal</span>
+            <span>Only the highest-paying qualifying payline is awarded per spin</span>
+          </div>
+          <div id="bonusSpinOverlay" class="bonus-spin-overlay" aria-hidden="true">
+            <span id="bonusSpinBadge" class="bonus-spin-badge">Standard Spin</span>
+            <span id="bonusSpinCopy" class="bonus-spin-copy">
+              Choose a purchased multiplier to enhance the next completed spin.
+            </span>
+          </div>
+          <div id="sparkleField" class="sparkle-field" aria-hidden="true"></div>
+          <div
+            id="reelBoard"
+            class="reel-board"
+            role="img"
+            aria-label="5 columns and 3 rows slot grid"
+          ></div>
+          <div class="glow-ring" aria-hidden="true"></div>
+        </div>
+
+        <!-- Primary play actions stay close to the reels for fast repeat interaction. -->
+        <div class="controls controls-priority">
+          <button id="autoSpinButton" class="ghost-button" type="button">
+            start auto spin
+          </button>
+          <button id="spinButton" class="spin-button" type="button">SPIN</button>
+          <button id="stopAutoSpinButton" class="ghost-button" type="button">
+            stop auto spin
+          </button>
+          <button id="resetButton" class="ghost-button" type="button">refill tokens</button>
+          <a class="ghost-button button-link" href="paytable.html">open paytable</a>
+          <button id="inviteButton" class="ghost-button" type="button">
+            invite friends
+          </button>
+        </div>
+
+        <!-- Secondary controls group together adjustable betting and reinforcement pattern demos. -->
+        <section class="control-grid" aria-label="slot controls">
+          <article class="control-card">
+            <div class="settings-heading">
+              <h2>Betting Limits</h2>
+              <span>Adjust the wager amount for the next spin.</span>
+            </div>
+            <label class="slider-field" for="costSlider">
+              <span>Bet / Wager</span>
+              <input
+                id="costSlider"
+                type="range"
+                min="10"
+                max="500"
+                step="10"
+                value="60"
+              />
+              <div class="slider-meta">
+                <strong id="costSliderValue">60</strong>
+                <span>credits</span>
+              </div>
+            </label>
+            <p class="settings-note">
+              All fixed payouts are multiplied by the current wager.
+            </p>
+          </article>
+
+          <article class="control-card bonus-buy-card">
+            <div class="settings-heading">
+              <h2>Bonus Multiplier</h2>
+              <span id="bonusBuyStatus">
+                No purchased multiplier is armed for the next spin.
+              </span>
+            </div>
+            <div class="bonus-meter" aria-label="bonus multiplier details">
+              <div>
+                <span>Next Spin Total</span>
+                <strong id="bonusBuyTotalCost">60 credits</strong>
+              </div>
+              <div>
+                <span>Current Bonus</span>
+                <strong id="bonusBuyMultiplierDisplay">Standard</strong>
+              </div>
+            </div>
+            <div
+              id="bonusBuyOptions"
+              class="bonus-buy-options"
+              role="group"
+              aria-label="Select a purchased multiplier for the next completed spin"
+            ></div>
+          </article>
+
+          <article class="control-card">
+            <div class="settings-heading">
+              <h2>Auto-Play</h2>
+              <span>Set the number of consecutive spins to be played automatically.</span>
+            </div>
+            <label class="slider-field" for="autoSpinSlider">
+              <span>Auto-Play Count</span>
+              <input
+                id="autoSpinSlider"
+                type="range"
+                min="1"
+                max="30"
+                step="1"
+                value="10"
+              />
+              <div class="slider-meta">
+                <strong id="autoSpinValue">10</strong>
+                <span>spins</span>
+              </div>
+            </label>
+            <p id="autoSpinStatus" class="settings-note">Auto-play idle.</p>
+          </article>
+
+          <article class="control-card daily-bonus-card">
+            <div class="settings-heading">
+              <h2>Daily Check-In</h2>
+              <span id="dailyBonusStatus">Checking daily play streak.</span>
+            </div>
+            <div class="bonus-meter" aria-label="daily bonus details">
+              <div>
+                <span>Today's Bonus</span>
+                <strong id="todaysBonusAmount">0 credits</strong>
+              </div>
+              <div>
+                <span>Next Streak Bonus</span>
+                <strong id="nextBonusAmount">0 credits</strong>
+              </div>
+            </div>
+            <p class="settings-note">
+              Open the game on consecutive days to build the streak and grow the
+              next daily credit bonus.
+            </p>
+          </article>
+
+          <article class="control-card">
+            <div class="settings-heading">
+              <h2>Variable Reward</h2>
+              <span id="variableRewardStatus">
+                Classroom demo active. Extra credits can arrive after an undisclosed
+                number of completed spins.
+              </span>
+            </div>
+            <div class="bonus-meter" aria-label="variable reward details">
+              <div>
+                <span>Last Bonus</span>
+                <strong id="variableRewardLastAmount">0 credits</strong>
+              </div>
+              <div>
+                <span>Bonuses Triggered</span>
+                <strong id="variableRewardCount">0</strong>
+              </div>
+            </div>
+            <p class="settings-note">
+              This schedule is intentionally hidden to simulate a variable-ratio
+              reinforcement pattern for classroom analysis.
+            </p>
+          </article>
+
+          <article class="control-card">
+            <div class="settings-heading">
+              <h2>House Rules</h2>
+              <span>Standard payline and award conditions apply.</span>
+            </div>
+            <ul class="rules-list">
+              <li>Horizontal paylines award for 3, 4, or 5 matching symbols.</li>
+              <li>Vertical and diagonal paylines award on 3 matching symbols.</li>
+              <li>Only the single highest-paying qualifying payline is paid per spin.</li>
+            </ul>
+          </article>
+        </section>
+
+        <!-- Status text mirrors the current game state for screen readers and quick scanning. -->
+        <p id="message" class="message" aria-live="polite">
+          Place your wager and spin the reels.
+        </p>
+
+        <!-- Post-spin summaries explain both awarded results and recent session history. -->
+        <section class="insight-grid">
+          <article class="breakdown-panel">
+            <div class="panel-heading">
+              <h2>Winner Breakdown</h2>
+            </div>
+            <p id="winMeta" class="visually-hidden">No spins completed.</p>
+            <div class="breakdown-table-shell">
+              <table class="breakdown-table" aria-describedby="winMeta">
+                <thead>
+                  <tr>
+                    <th scope="col">Result</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">Award</th>
+                  </tr>
+                </thead>
+                <tbody id="breakdownList">
+                  <tr>
+                    <td class="empty-state" colspan="3">
+                      No winning paylines have been recorded.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="breakdown-panel">
+            <div class="panel-heading">
+              <h2>Spin History</h2>
+            </div>
+            <ul id="spinHistoryList" class="history-list">
+              <li class="empty-state">No spins recorded yet.</li>
+            </ul>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <!-- Coin rain is injected only for celebration moments, separate from the base FX layer. -->
+    <div id="coinRain" class="coin-rain" aria-hidden="true"></div>
+
+    <!-- Modal shown when the requested wager exceeds the available credit meter. -->
+    <div
+      id="wagerWarningModal"
+      class="privacy-modal wager-warning-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="wagerWarningTitle"
+      hidden
+    >
+      <div class="privacy-card reward-card">
+        <p class="eyebrow">Credit check</p>
+        <h2 id="wagerWarningTitle">Not Enough Credits</h2>
+        <p id="wagerWarningCopy" class="privacy-copy">
+          Your current wager is higher than your credit meter.
+        </p>
+        <div class="privacy-actions">
+          <button id="wagerWarningRefillButton" class="spin-button" type="button">
+            Refill Tokens
+          </button>
+          <button id="wagerWarningCloseButton" class="ghost-button" type="button">
+            Keep Countdown
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily streak reward confirmation is isolated so it can interrupt play cleanly. -->
+    <div
+      id="dailyBonusModal"
+      class="privacy-modal daily-bonus-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dailyBonusTitle"
+      hidden
+    >
+      <div class="privacy-card reward-card">
+        <p class="eyebrow">Daily check-in</p>
+        <h2 id="dailyBonusTitle">Daily Bonus Awarded</h2>
+        <p id="dailyBonusModalAmount" class="reward-amount">+0 credits</p>
+        <div class="reward-summary">
+          <div>
+            <span>Current Streak</span>
+            <strong id="dailyBonusModalStreak">0 days</strong>
+          </div>
+          <div>
+            <span>Next Daily Bonus</span>
+            <strong id="dailyBonusModalNext">0 credits</strong>
+          </div>
+        </div>
+        <p class="privacy-copy">
+          Come back tomorrow to keep the streak alive and increase the next bonus.
+        </p>
+        <div class="privacy-actions">
+          <button id="dailyBonusCloseButton" class="spin-button" type="button">
+            Claim Bonus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entry gate collects the local consent and location acknowledgement required before play. -->
+    <div
+      id="privacyModal"
+      class="privacy-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="privacyTitle"
+    >
+      <div class="privacy-card">
+        <p class="eyebrow">Before play begins</p>
+        <h2 id="privacyTitle">Privacy, terms, and eligibility check</h2>
+        <p class="privacy-copy">
+          This play-for-fun slot stores consent and location acknowledgement locally
+          on this device. It does not determine legal eligibility and does not
+          provide any real-money payouts.
+        </p>
+
+        <!-- Policy summaries explain the two consent checkboxes without leaving the screen. -->
+        <div class="policy-grid">
+          <article class="policy-card">
+              <h3>Privacy Policy</h3>
+              <p>
+                Consent choices and location acknowledgement are stored in browser
+                storage so the game can remember your session preferences.
+              </p>
+          </article>
+          <article class="policy-card">
+              <h3>Terms Of Service</h3>
+              <p>
+                This is a play-for-fun experience using virtual credits only. Check
+                local requirements separately before participating in any real-money
+                gaming activity.
+              </p>
+          </article>
+        </div>
+
+        <!-- Location input supports either device geolocation or a manual state selection fallback. -->
+        <section class="location-box" aria-label="location acknowledgement">
+          <div class="settings-heading">
+            <h3>Location Reminder</h3>
+            <span>Gaming requirements vary by state, so confirm your location first.</span>
+          </div>
+          <div class="location-actions">
+            <button id="locationButton" class="ghost-button" type="button">
+              Share Device Location
+            </button>
+            <p id="locationFeedback" class="location-feedback">
+              No location submitted. You can also choose your state manually.
+            </p>
+          </div>
+          <label class="field" for="stateSelect">
+            <span>Manual State Selection</span>
+            <select id="stateSelect">
+              <option value="">Choose a state</option>
+            </select>
+          </label>
+        </section>
+
+        <!-- Both acknowledgements must be checked before the game can be entered. -->
+        <div class="privacy-actions">
+          <label class="privacy-check" for="privacyCheckbox">
+            <input id="privacyCheckbox" type="checkbox" />
+            <span>I accept the privacy policy.</span>
+          </label>
+          <label class="privacy-check" for="termsCheckbox">
+            <input id="termsCheckbox" type="checkbox" />
+            <span>I accept the terms of service.</span>
+          </label>
+          <button id="privacyAcceptButton" class="spin-button" type="button" disabled>
+            Enter Game
+          </button>
+        </div>
+
+        <p class="legal-note">
+          Location details stay on this device. This app is not legal advice and does
+          not verify gaming eligibility in your jurisdiction.
+        </p>
+      </div>
+    </div>
+
+    <!-- Shared data and feature modules load before the main page controller. -->
+    <script src="vendor/motion.js"></script>
+    <script src="game-data.js"></script>
+    <script src="bonus-feature.js"></script>
+    <script src="variable-ratio-reward.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

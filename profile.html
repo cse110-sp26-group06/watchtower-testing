@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Drop Casino Profile</title>
+    <script>
+      (function initializeTheme() {
+        try {
+          const storedTheme = window.localStorage.getItem("prompt-drop-theme-v1");
+          if (storedTheme === "light" || storedTheme === "dark") {
+            document.documentElement.dataset.theme = storedTheme;
+          }
+        } catch (error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="paytable-page profile-page">
+    <main class="info-shell">
+      <!-- Shared hero pattern introduces the profile area while keeping navigation close at hand. -->
+      <section class="hero">
+        <a class="ghost-button button-link profile-link" href="index.html">back to game</a>
+        <button
+          id="themeToggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Toggle color theme"
+          aria-pressed="false"
+        >
+          Dark Mode
+        </button>
+        <p class="eyebrow">Player personalization</p>
+        <h1 class="page-title">User Profile</h1>
+        <p class="page-subtitle">
+          Save your display name and spend credits to unlock profile icons.
+        </p>
+      </section>
+
+      <!-- Profile content reuses the same dashboard language as the slot page for continuity. -->
+      <section class="info-panel">
+        <!-- Lightweight account summary mirrors the currently saved local profile state. -->
+        <div class="status-bar">
+          <article class="stat-card">
+            <span class="stat-label">Credit Meter</span>
+            <strong id="profileTokenCount">3,000</strong>
+          </article>
+          <article class="stat-card player-stat-card">
+            <span class="stat-label">Current Profile</span>
+            <strong>
+              <span id="profileIconDisplay">🙂</span>
+              <span id="profileNameDisplay">Guest</span>
+            </strong>
+          </article>
+        </div>
+
+        <!-- Two-column layout separates editing the display name from icon purchasing/equipping. -->
+        <section class="profile-layout">
+          <article class="control-card profile-card">
+            <div class="settings-heading">
+              <h2>Display Name</h2>
+              <span>Stored locally on this device.</span>
+            </div>
+            <label class="field" for="playerNameInput">
+              <span>Name</span>
+              <input
+                id="playerNameInput"
+                class="text-input"
+                type="text"
+                maxlength="18"
+                placeholder="Guest"
+                autocomplete="nickname"
+              />
+            </label>
+            <div class="profile-actions">
+              <button id="saveNameButton" class="ghost-button" type="button">
+                save name
+              </button>
+              <p id="playerNameStatus" class="settings-note">Profile saved locally.</p>
+            </div>
+          </article>
+
+          <article class="control-card profile-card">
+            <div class="settings-heading">
+              <h2>Icon Shop</h2>
+              <span>Unlocked icons can be equipped anytime.</span>
+            </div>
+            <div id="iconShopList" class="icon-shop profile-icon-shop" aria-label="icon shop"></div>
+          </article>
+        </section>
+
+        <div class="page-link-row">
+          <a class="spin-button button-link" href="index.html">Return To Slot</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared game data feeds the profile page before the profile-specific controller runs. -->
+    <script src="vendor/motion.js"></script>
+    <script src="game-data.js"></script>
+    <script src="profile.js"></script>
+  </body>
+</html>

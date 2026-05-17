@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Drop Casino Paytable</title>
+    <script>
+      (function initializeTheme() {
+        try {
+          const storedTheme = window.localStorage.getItem("prompt-drop-theme-v1");
+          if (storedTheme === "light" || storedTheme === "dark") {
+            document.documentElement.dataset.theme = storedTheme;
+          }
+        } catch (error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="paytable-page">
+    <main class="info-shell">
+      <!-- Shared page hero keeps the paytable visually aligned with the main game and profile pages. -->
+      <section class="hero">
+        <button
+          id="themeToggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Toggle color theme"
+          aria-pressed="false"
+        >
+          Dark Mode
+        </button>
+        <p class="eyebrow">Game rules and payout schedule</p>
+        <h1 class="page-title">Paytable</h1>
+        <p class="page-subtitle">
+          Review the fixed payout table, all 10 paylines, and the location
+          acknowledgement used before play.
+        </p>
+      </section>
+
+      <!-- Reference content combines static rules, generated payout data, and payline visuals. -->
+      <section class="info-panel">
+        <!-- High-level game facts are surfaced first for quick orientation. -->
+        <div class="rule-cards">
+          <article class="rule-card">
+            <span class="rule-label">Grid Size</span>
+            <strong id="gridSize">5 x 3</strong>
+          </article>
+          <article class="rule-card">
+            <span class="rule-label">Paylines</span>
+            <strong id="paylineCount">10</strong>
+          </article>
+          <article class="rule-card">
+            <span class="rule-label">Minimum Match</span>
+            <strong>3 Of A Kind</strong>
+          </article>
+          <article class="rule-card">
+            <span class="rule-label">Payout Rule</span>
+            <strong>Highest Payline Only</strong>
+          </article>
+        </div>
+
+        <!-- Short rule explanations add context that complements the raw numbers below. -->
+        <div class="info-grid">
+          <article class="info-card">
+            <h2>How Wins Are Paid</h2>
+            <p>
+              Horizontal paylines award for 3, 4, or 5 matching adjacent symbols.
+              Vertical and diagonal paylines contain three positions, so they award
+              only on 3 of a kind. If multiple paylines qualify on the same spin,
+              only the highest-paying payline is credited.
+            </p>
+          </article>
+          <article class="info-card">
+            <h2>Location Reminder</h2>
+            <p id="complianceReminder">
+              The game requests device location or a manually selected state before
+              play because gaming requirements differ by state. This reminder is
+              stored locally only and does not verify legal eligibility.
+            </p>
+          </article>
+        </div>
+
+        <!-- The paytable body is populated from shared game data so this page stays in sync with gameplay. -->
+        <section class="table-panel">
+          <h2>Fixed Paytable</h2>
+          <table class="paytable-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Weight</th>
+                <th>3 Of A Kind</th>
+                <th>4 Of A Kind</th>
+                <th>5 Of A Kind</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="paytableBody"></tbody>
+          </table>
+        </section>
+
+        <!-- Each payline is rendered as a miniature board preview for easier rule interpretation. -->
+        <section class="table-panel">
+          <div class="panel-heading">
+            <h2>Payline Gallery</h2>
+            <span>Horizontal, vertical, and diagonal paylines.</span>
+          </div>
+          <div id="paylineGallery" class="line-gallery"></div>
+        </section>
+
+        <div class="page-link-row">
+          <a class="spin-button button-link" href="index.html">Return To Slot</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared data loads before the page-specific renderer. -->
+    <script src="vendor/motion.js"></script>
+    <script src="game-data.js"></script>
+    <script src="paytable.js"></script>
+  </body>
+</html>
