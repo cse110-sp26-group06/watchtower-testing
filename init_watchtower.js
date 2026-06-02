@@ -1,0 +1,2 @@
+import { initWatchtower } from './node_modules/watchtower/sdk/watchtower-sdk/src/index.js';
+initWatchtower({apiKey: "wt_56bf9b93466f45d3a8b680d8a564105e", service: "watchtower-test-site",environment: "production"});

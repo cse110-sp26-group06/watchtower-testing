@@ -1,0 +1,25 @@
+<!DOCTYPE html lang="en">
+
+<html>
+<body>    
+    <div class="controls">
+        <select id="selector" name="selector">
+            <option value="script-error">trigger error</option>
+            <option value="no-error">no error</option>
+        </select>
+        <button id="try-button" type="button">try</button>
+    </div>
+
+    <div class="event-log">
+        <label for="eventLog">Event log:</label>
+        <textarea
+            readonly
+            class="event-log-contents"
+            rows="8"
+            cols="30"
+            id="eventLog"></textarea>
+        </div>
+
+    <script src="error-test.js"></script>
+</body>
+</html>
