@@ -1,4 +1,4 @@
-import { isValidEvent } from "../types/isValidEvent";
+import { isValidEvent } from "../types/isValidEvent.js";
 
 /**
  * BatchingEngine
