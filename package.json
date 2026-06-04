@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "watchtower": "github:cse110-sp26-group06/watchtower"
+    "watchtower": "github:cse110-sp26-group06/watchtower#sdk-pipeline-testing"
   }
 }

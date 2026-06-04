@@ -4,7 +4,7 @@
 
 ## About
 
-WatchTower is a small observability platform: developers add an injectable JavaScript SDK to their site, and WatchTower captures runtime errors, performance metrics, and user feedback, surfacing them through a centralized dashboard. Think Sentry or LogRocket, but small enough that one person can understand the whole thing end to end.
+WatchTower is a small observability platform: developers add an injectable JavaScript SDK to their site, and WatchTower captures runtime errors and performance metrics, surfacing them through a centralized dashboard. Post-MVP goals include user feedback, build signals, and notifications. Think Sentry or LogRocket, but small enough that one person can understand the whole thing end to end.
 
 This is a class project for **CSE 110 (Software Engineering)** at UC San Diego, Spring 2026. 
 
