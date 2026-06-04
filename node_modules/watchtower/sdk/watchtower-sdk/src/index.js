@@ -1,4 +1,4 @@
-import BatchingEngine from "./batching/BatchingEngine";
+import BatchingEngine from "./batching/BatchingEngine.js";
 import { send } from  "./transport/send.js";
 import { parseError } from "./handler/parseError.js";
 import { parseLog } from "./handler/parseLog.js";
