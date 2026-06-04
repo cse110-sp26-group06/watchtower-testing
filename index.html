@@ -258,6 +258,36 @@
               <li>Only the single highest-paying qualifying payline is paid per spin.</li>
             </ul>
           </article>
+
+          <article class="control-card watchtower-error-card">
+            <div class="settings-heading">
+              <h2>Watchtower Error Tests</h2>
+              <span>Trigger intentional events for realtime capture.</span>
+            </div>
+            <div class="watchtower-error-actions" aria-label="Watchtower error triggers">
+              <button class="ghost-button" type="button" data-watchtower-error="typeError">
+                TypeError
+              </button>
+              <button class="ghost-button" type="button" data-watchtower-error="referenceError">
+                ReferenceError
+              </button>
+              <button class="ghost-button" type="button" data-watchtower-error="uriError">
+                URIError
+              </button>
+              <button class="ghost-button" type="button" data-watchtower-error="promiseRejection">
+                Promise Rejection
+              </button>
+              <button class="ghost-button" type="button" data-watchtower-error="manualCapture">
+                Manual Capture
+              </button>
+              <button class="ghost-button" type="button" data-watchtower-error="consoleError">
+                Console Error
+              </button>
+            </div>
+            <p id="watchtowerErrorStatus" class="settings-note" aria-live="polite">
+              Pick a trigger to send a deliberate Watchtower test event.
+            </p>
+          </article>
         </section>
 
         <!-- Status text mirrors the current game state for screen readers and quick scanning. -->
@@ -453,5 +483,6 @@
     <script src="bonus-feature.js"></script>
     <script src="variable-ratio-reward.js"></script>
     <script src="script.js"></script>
+    <script type="module" src="./error-triggers.js"></script>
   </body>
 </html>
