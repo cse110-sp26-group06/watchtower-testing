@@ -1,4 +1,4 @@
-import { captureError } from "./node_modules/watchtower/sdk/watchtower-sdk/src/index.js";
+import { captureError } from "./node_modules/watchtower/sdk/src/index.js";
 
 const status = document.getElementById("watchtowerErrorStatus");
 
