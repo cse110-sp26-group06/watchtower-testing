@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "watchtower": "github:cse110-sp26-group06/watchtower#sdk-directory-restructure"
-  }
-}
